@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+             version="3.1">
+
+  <persistence-unit name="some" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+    <properties>
+      <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+      <property name="hibernate.show_sql" value="true"/>
+
+      <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/postgres"/>
+      <property name="hibernate.connection.username" value="postgres"/>
+      <property name="hibernate.connection.password" value="solaris"/>
+
+      <property name="hibernate.archive.autodetection" value="class, hbm"/>
+      <property name="hibernate.connection.pool_size" value="5"/>
+      <property name="hibernate.format_sql" value="true"/>
+      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+
+      <!--NOTE: hibernate.jdbc.batch_versioned_data should be set to false when testing with Oracle-->
+      <property name="hibernate.jdbc.batch_versioned_data" value="true"/>
+      <property name="javax.persistence.validation.mode" value="NONE"/>
+      <property name="hibernate.service.allow_crawling" value="false"/>
+      <property name="hibernate.session.events.log" value="true"/>
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="org.hibernate.ogm.tutorial.jpa" transaction-type="JTA">
+    <!-- Use Hibernate OGM provider: configuration will be transparent -->
+    <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+    <properties>
+      <property name="hibernate.transaction.jta.platform"
+                value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
+      <property name="hibernate.ogm.datastore.provider"
+                value="infinispan" />
+    </properties>
+  </persistence-unit>
+</persistence>

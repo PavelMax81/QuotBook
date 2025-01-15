@@ -1,0 +1,142 @@
+package ru.syn.QuotBook.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.syn.QuotBook.models.Quote;
+import ru.syn.QuotBook.repositories.QuoteRepository;
+import ru.syn.QuotBook.services.QuoteService;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api")
+public class ApiController {
+    @Autowired
+    QuoteRepository repository;
+
+    @Autowired
+    QuoteService service;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Quote>> getAll(@RequestParam(required = false, defaultValue = "1") String page){
+        int _page = 1;
+        try{
+            _page = Integer.parseInt(page);
+        }catch(Exception ignored){
+        }
+        Page<Quote> res = repository.findAll(PageRequest.of(_page - 1, 5));
+        ResponseEntity<List<Quote>> allQuotesFromPage = new ResponseEntity<>(res.stream().collect(Collectors.toList()), HttpStatus.OK);
+        return allQuotesFromPage;
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<List<Quote>> getPage(@RequestParam(required = false, defaultValue = "1") String page){
+        int _page = 1;
+        try{
+            _page = Integer.parseInt(page);
+        }catch(Exception ignored){
+        }
+        List<Quote> res = service.getPage(_page);
+        ResponseEntity<List<Quote>> allQuotesFromPage = new ResponseEntity<>(res, HttpStatus.OK);
+        return allQuotesFromPage;
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<Quote> getQuoteById(@PathVariable("id") long id){
+        Quote quote = service.getQuoteById(id);
+
+        if(quote == null){
+            return new ResponseEntity<Quote>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Quote>(quote, HttpStatus.OK);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<Quote> getRandomQuote(){
+        Quote quote = service.getRandomQuote();
+
+        if(quote == null){
+            return new ResponseEntity<Quote>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Quote>(quote, HttpStatus.OK);
+    }
+
+    @GetMapping("/randomList")
+    public ResponseEntity<List<Quote>> getQuoteList(){
+        List<Quote> allQuotes = repository.findAll();
+
+        if(allQuotes == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(allQuotes, HttpStatus.OK);
+    }
+}
+
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>4.3.11.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<!-- jsoup HTML parser library @ https://jsoup.org/ -->
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.18.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.12.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.pengrad/java-telegram-bot-api -->
+		<dependency>
+			<groupId>com.github.pengrad</groupId>
+			<artifactId>java-telegram-bot-api</artifactId>
+			<version>7.9.1</version>
+		</dependency>
+
+
+
+
+
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.1.0</version>
+			<scope>provided</scope>
+		</dependency>
